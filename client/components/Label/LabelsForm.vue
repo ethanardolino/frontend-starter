@@ -16,7 +16,7 @@ async function getLabels() {
 <template>
   <h2>Labels</h2>
   <ul>
-    <li v-for="l in labels" :key="l._id">{{ l }}</li>
+    <li v-for="l in labels" :key="l">{{ l }}</li>
   </ul>
   <AddLabelForm v-on:refreshLabels="getLabels" v-bind:labels="labels" />
 </template>
