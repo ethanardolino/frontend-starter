@@ -27,6 +27,7 @@ class Routes {
   async createUser(session: WebSessionDoc, username: string, password: string, handle: string) {
     WebSession.isLoggedOut(session);
     const user = (await User.create(username, password)).user;
+    await Label.createLabel(user!._id, "Following"); // create default label for a new account
     return await Profile.create(user!._id, handle);
   }
 
@@ -93,7 +94,7 @@ class Routes {
     const user = WebSession.getUser(session);
     const follow = (await User.getUserByUsername(username))._id;
     await Profile.followAccount(user, follow);
-    await Label.create(user, "_follow_", follow);
+    await Label.labelItem(user, "Following", username);
     return { msg: `Successfully followed '${username}'` };
   }
 
@@ -102,38 +103,63 @@ class Routes {
     const user = WebSession.getUser(session);
     const follow = (await User.getUserByUsername(username))._id;
     await Profile.unfollowAccount(user, follow);
-    await Label.remove(user, "_follow_", follow);
+    await Label.removeItemLabel(user, "Following", username);
     return { msg: `Successfully unfollowed '${username}'` };
   }
 
-  @Router.get("/labels/:filter")
-  async getFilteredFeed(session: WebSessionDoc, filter: String) {
-    const user = WebSession.getUser(session);
-    return await Label.getUserLabeledItems(user, filter);
-  }
-
   @Router.get("/labels")
-  async getAllLabeledItems(session: WebSessionDoc) {
+  async getAllLabels(session: WebSessionDoc) {
     const user = WebSession.getUser(session);
-    return await Label.getUserLabeledItems(user);
+    return await Label.getLabels(user);
   }
 
-  @Router.post("/labels/:item_id&label")
-  async createItemLabel(session: WebSessionDoc, item_id: ObjectId, label: String) {
+  @Router.post("/labels/:label")
+  async createLabel(session: WebSessionDoc, label: string) {
     const user = WebSession.getUser(session);
-    return await Label.create(user, label, item_id);
+    return await Label.createLabel(user, label);
   }
 
-  @Router.get("/labels/:item_id")
-  async getItemLabel(session: WebSessionDoc, item_id: ObjectId) {
+  @Router.delete("/labels/:label")
+  async deleteLabel(session: WebSessionDoc, label: string) {
     const user = WebSession.getUser(session);
-    return await Label.getLabels(user, item_id);
+    return await Label.deleteLabel(user, label);
   }
 
-  @Router.delete("/labels/:item_id&label")
-  async removeItemLabel(session: WebSessionDoc, item_id: ObjectId, label: String) {
+  @Router.patch("/labels/:oldLabel&newLabel")
+  async updateLabel(session: WebSessionDoc, oldLabel: string, newLabel: string) {
     const user = WebSession.getUser(session);
-    return await Label.remove(user, label, item_id);
+    return await Label.updateLabel(user, oldLabel, newLabel);
+  }
+
+  @Router.get("/itemLabels/:filter")
+  async getItemsWithLabel(session: WebSessionDoc, filter: string) {
+    const user = WebSession.getUser(session);
+    return await Label.getLabeledItems(user, filter);
+  }
+
+  @Router.post("/itemLabels")
+  async createItemLabel(session: WebSessionDoc, item: string, label: string) {
+    const user = WebSession.getUser(session);
+    await Label.createLabel(user, label);
+    return await Label.labelItem(user, label, item);
+  }
+
+  @Router.get("/itemLabels")
+  async getAllItemLabels(session: WebSessionDoc) {
+    const user = WebSession.getUser(session);
+    return await Label.getAllItemLabels(user);
+  }
+
+  @Router.get("/itemLabels/:item")
+  async getItemLabel(session: WebSessionDoc, item: string) {
+    const user = WebSession.getUser(session);
+    return await Label.getItemLabels(user, item);
+  }
+
+  @Router.delete("/itemLabels/:item&label")
+  async removeItemLabel(session: WebSessionDoc, item: string, label: string) {
+    const user = WebSession.getUser(session);
+    return await Label.removeItemLabel(user, label, item);
   }
 
   @Router.get("/posts")
