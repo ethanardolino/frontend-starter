@@ -51,15 +51,15 @@ export default class LabelConcept {
   }
 
   async updateLabel(owner: ObjectId, oldLabel: string, newLabel: string) {
-    const updateLabel: Partial<LabelDoc> = { owner, label: newLabel };
+    const updateLabel = { owner, label: newLabel };
     await this.labels.updateOne({ owner, label: oldLabel }, updateLabel);
     await this.labeledItems.updateMany({ owner, label: oldLabel }, updateLabel);
     return { msg: `Successfully changed all instances of '${oldLabel}' to ${newLabel}` };
   }
 
-  async getLabeledItems(owner: ObjectId, label?: string) {
-    const query = label ? { owner, label } : { owner };
-    return await this.labels.readMany(query);
+  async getLabeledItems(owner: ObjectId, label: string) {
+    const labeledItems = await this.labeledItems.readMany({ owner, label });
+    return labeledItems.map((doc) => doc.item);
   }
 
   async getItemLabels(owner: ObjectId, item: string) {
@@ -69,7 +69,6 @@ export default class LabelConcept {
 
   async getAllItemLabels(owner: ObjectId) {
     const labeledItems = await this.labeledItems.readMany({ owner });
-    const itemMap: Array<[string, string]> = labeledItems.map((doc) => [doc.item, doc.label]);
-    return new Map(itemMap);
+    return labeledItems.map((doc) => [doc.item, doc.label]);
   }
 }

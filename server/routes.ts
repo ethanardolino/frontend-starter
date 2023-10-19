@@ -125,16 +125,10 @@ class Routes {
     return await Label.deleteLabel(user, label);
   }
 
-  @Router.patch("/labels/:oldLabel&newLabel")
+  @Router.patch("/labels")
   async updateLabel(session: WebSessionDoc, oldLabel: string, newLabel: string) {
     const user = WebSession.getUser(session);
     return await Label.updateLabel(user, oldLabel, newLabel);
-  }
-
-  @Router.get("/itemLabels/:filter")
-  async getItemsWithLabel(session: WebSessionDoc, filter: string) {
-    const user = WebSession.getUser(session);
-    return await Label.getLabeledItems(user, filter);
   }
 
   @Router.post("/itemLabels")
@@ -144,22 +138,28 @@ class Routes {
     return await Label.labelItem(user, label, item);
   }
 
+  @Router.delete("/itemLabels")
+  async removeItemLabel(session: WebSessionDoc, item: string, label: string) {
+    const user = WebSession.getUser(session);
+    return await Label.removeItemLabel(user, label, item);
+  }
+
   @Router.get("/itemLabels")
   async getAllItemLabels(session: WebSessionDoc) {
     const user = WebSession.getUser(session);
     return await Label.getAllItemLabels(user);
   }
 
-  @Router.get("/itemLabels/:item")
+  @Router.get("/itemLabels/labels/:item")
   async getItemLabel(session: WebSessionDoc, item: string) {
     const user = WebSession.getUser(session);
     return await Label.getItemLabels(user, item);
   }
 
-  @Router.delete("/itemLabels/:item&label")
-  async removeItemLabel(session: WebSessionDoc, item: string, label: string) {
+  @Router.get("/itemLabels/items/:label")
+  async getItemsWithLabel(session: WebSessionDoc, label: string) {
     const user = WebSession.getUser(session);
-    return await Label.removeItemLabel(user, label, item);
+    return await Label.getLabeledItems(user, label);
   }
 
   @Router.get("/posts")

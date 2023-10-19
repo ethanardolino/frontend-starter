@@ -6,7 +6,6 @@ import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
-import LabelsForm from "../Label/LabelsForm.vue";
 import SearchPostForm from "./SearchPostForm.vue";
 
 const { isLoggedIn } = storeToRefs(useUserStore());
@@ -39,9 +38,6 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <Suspense>
-    <LabelsForm />
-  </Suspense>
   <section v-if="isLoggedIn">
     <h2>Create a post:</h2>
     <CreatePostForm @refreshPosts="getPosts" />

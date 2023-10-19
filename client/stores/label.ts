@@ -9,7 +9,7 @@ export const useLabelStore = defineStore(
     };
 
     const deleteLabel = async (label: string) => {
-      await fetchy(`/api/labels`, "DELETE", { body: { label } });
+      await fetchy(`/api/labels/${label}`, "DELETE");
     };
 
     const updateLabel = async (oldLabel: string, newLabel: string) => {
