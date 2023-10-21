@@ -8,8 +8,12 @@ export const useLabelStore = defineStore(
       await fetchy(`/api/labels/${label}`, "POST");
     };
 
-    const deleteLabel = async (label: string) => {
-      await fetchy(`/api/labels/${label}`, "DELETE");
+    const removeLabel = async (label: string, username: string) => {
+      if (username !== "") {
+        await fetchy(`/api/itemLabels`, "DELETE", { query: { label, item: username } });
+      } else {
+        await fetchy(`/api/labels`, "DELETE", { query: { label } });
+      }
     };
 
     const updateLabel = async (oldLabel: string, newLabel: string) => {
@@ -20,12 +24,7 @@ export const useLabelStore = defineStore(
       await fetchy(`/api/itemLabels`, "POST", { body: { item, label } });
     };
 
-    const unlabelAccount = async (label: string, username: string) => {
-      const item = await fetchy(`/api/users`, "GET", { body: { username } });
-      await fetchy(`/api/itemLabels`, "DELETE", { body: { item, label } });
-    };
-
-    return { createLabel, deleteLabel, updateLabel, labelAccount, unlabelAccount };
+    return { createLabel, removeLabel, updateLabel, labelAccount };
   },
   { persist: true },
 );

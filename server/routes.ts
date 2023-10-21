@@ -107,7 +107,7 @@ class Routes {
     return { msg: `Successfully unfollowed '${username}'` };
   }
 
-  @Router.get("/labels")
+  @Router.get("/itemLabels/labels")
   async getAllLabels(session: WebSessionDoc) {
     const user = WebSession.getUser(session);
     return await Label.getLabels(user);
@@ -119,7 +119,7 @@ class Routes {
     return await Label.createLabel(user, label);
   }
 
-  @Router.delete("/labels/:label")
+  @Router.delete("/labels")
   async deleteLabel(session: WebSessionDoc, label: string) {
     const user = WebSession.getUser(session);
     return await Label.deleteLabel(user, label);

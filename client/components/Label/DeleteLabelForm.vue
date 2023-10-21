@@ -4,18 +4,18 @@ import { ref } from "vue";
 
 const props = defineProps(["labels"]);
 const emit = defineEmits(["refreshLabels"]);
-const { deleteLabel } = useLabelStore();
+const { removeLabel } = useLabelStore();
 
 const label = ref("");
 
-async function removeLabel() {
-  await deleteLabel(label.value);
+async function deleteLabel() {
+  await removeLabel(label.value, "");
   emit("refreshLabels");
 }
 </script>
 
 <template>
-  <form class="pure-form pure-form-aligned" @submit.prevent="removeLabel">
+  <form class="pure-form pure-form-aligned" @submit.prevent="deleteLabel">
     <h3>Delete a Label</h3>
     <div class="pure-control-group">
       <label for="aligned-select">Label</label>

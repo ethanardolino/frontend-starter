@@ -1,12 +1,17 @@
 <script setup lang="ts">
+import { useLabelStore } from "@/stores/label";
 import { useUserStore } from "@/stores/user";
 import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
+import { onBeforeMount, ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
+import DisplayLabel from "../Label/DisplayLabel.vue";
 
+const { removeLabel } = useLabelStore();
 const props = defineProps(["post"]);
 const emit = defineEmits(["editPost", "refreshPosts"]);
 const { currentUsername } = storeToRefs(useUserStore());
+const labels = ref([]);
 
 const deletePost = async () => {
   try {
@@ -16,9 +21,24 @@ const deletePost = async () => {
   }
   emit("refreshPosts");
 };
+
+async function getLabels() {
+  return await fetchy(`/api/itemLabels/labels/${props.post.author}`, "GET");
+}
+
+async function deleteLabels(label: string) {
+  await removeLabel(label, props.post.author);
+  labels.value = await getLabels();
+}
+onBeforeMount(async () => {
+  labels.value = await getLabels();
+});
 </script>
 
 <template>
+  <div class="group">
+    <DisplayLabel v-for="l in labels" :key="l" v-bind:label="l" v-on:deleteLabel="deleteLabels" />
+  </div>
   <p class="author">{{ props.post.author }}</p>
   <p>{{ props.post.content }}</p>
   <div class="base">
