@@ -5,7 +5,7 @@ const emit = defineEmits(["deleteLabel"]);
 <template>
   <div class="label-box">
     <p class="label-text">{{ props.label }}</p>
-    <button class="delete" @click="emit('deleteLabel', props.label)">X</button>
+    <button v-if="props.label !== 'Following'" class="delete" @click="emit('deleteLabel', props.label)">X</button>
   </div>
 </template>
 
@@ -28,11 +28,11 @@ const emit = defineEmits(["deleteLabel"]);
 .delete {
   float: left;
   margin: 1em;
-  background-color: red;
+  background-color: lightgray;
   border-color: transparent;
 }
 .delete:hover {
-  background-color: lightcoral;
+  background-color: darkgray;
   transition: 0.2s;
 }
 </style>

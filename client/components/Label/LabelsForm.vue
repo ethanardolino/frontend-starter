@@ -25,16 +25,13 @@ async function deleteLabels(label: string) {
 
 <template>
   <main>
-    <h2>Labels</h2>
-    <section>
-      <form class="pure-form" @submit.prevent="getLabels">
-        <fieldset>
-          <legend>Find labels associated with an account</legend>
-          <input type="text" v-model="item" placeholder="username" />
-          <button type="submit" class="pure-button pure-button-primary">Find Labels</button>
-        </fieldset>
-      </form>
-    </section>
+    <form class="pure-form" @submit.prevent="getLabels">
+      <fieldset class="label-fields">
+        <legend>Find every Label associated with an Account</legend>
+        <input type="text" v-model="item" placeholder="username" />
+        <button type="submit" class="pure-button pure-button-primary">Find Labels</button>
+      </fieldset>
+    </form>
     <div class="group">
       <DisplayLabel v-for="l in labels" :key="l" v-bind:label="l" v-on:deleteLabel="deleteLabels" />
     </div>
@@ -62,5 +59,21 @@ section {
   margin-bottom: 2em;
   display: flex;
   flex-direction: column;
+}
+
+legend {
+  font-size: x-large;
+  font-style: italic;
+  font-weight: bolder;
+}
+
+.label-fields {
+  display: flex;
+  flex-direction: column;
+  margin-top: 2em;
+  margin-bottom: 6em;
+}
+.label-fields * {
+  margin-top: 1.5em;
 }
 </style>

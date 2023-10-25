@@ -22,29 +22,53 @@ async function addAccountLabel() {
 
 <template>
   <form class="pure-form pure-form-aligned" @submit.prevent="addLabel">
-    <h3>Create a label</h3>
-    <div class="pure-control-group">
-      <label for="aligned-label-1">Label</label>
+    <fieldset class="label-fields">
+      <legend>Create a Label</legend>
       <input v-model.trim="label" type="text" id="aligned-label-1" placeholder="Label" required />
-    </div>
-    <div class="pure-controls">
       <button type="submit" class="pure-button pure-button-primary">Submit</button>
-    </div>
+    </fieldset>
   </form>
   <form class="pure-form pure-form-aligned" @submit.prevent="addAccountLabel">
-    <h3>Label an Account</h3>
-    <div class="pure-control-group">
-      <label for="aligned-username">Username</label>
-      <input v-model.trim="username" type="text" id="aligned-username" placeholder="User to Label" required />
-    </div>
-    <div class="pure-control-group">
-      <label for="aligned-select">Label</label>
-      <select v-model.trim="labelForAccount" name="aligned-select" required>
-        <option v-for="_label in props.labels" :key="_label._id" :value="_label">{{ _label }}</option>
-      </select>
-    </div>
-    <div class="pure-controls">
+    <fieldset class="label-fields">
+      <legend>Label an Account</legend>
+      <input v-model.trim="username" type="text" id="username" placeholder="username" required />
+      <div class="select-label-container">
+        <label for="select">Label</label>
+        <select class="select-label" v-model.trim="labelForAccount" name="select" required>
+          <option v-for="_label in props.labels" :key="_label._id" :value="_label">{{ _label }}</option>
+        </select>
+      </div>
       <button type="submit" class="pure-button pure-button-primary">Submit</button>
-    </div>
+    </fieldset>
   </form>
 </template>
+
+<style scoped>
+legend {
+  font-size: x-large;
+  font-style: italic;
+  font-weight: bolder;
+}
+.label-fields {
+  display: flex;
+  flex-direction: column;
+  margin-top: 2em;
+  margin-bottom: 6em;
+}
+.label-fields * {
+  margin-top: 1.5em;
+}
+
+.select-label-container {
+  display: flex;
+  margin-right: 2em;
+  align-items: center;
+}
+.select-label {
+  flex: 1;
+  margin-left: 2em;
+}
+label {
+  font-size: larger;
+}
+</style>

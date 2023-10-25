@@ -73,6 +73,6 @@ export default class ProfileConcept {
   }
 
   getReadableTimeActive(seconds: number) {
-    return { minutes: Math.floor(seconds / 60), seconds: seconds % 60 };
+    return { seconds };
   }
 }

@@ -14,9 +14,9 @@ export const useUserStore = defineStore(
       currentUsername.value = "";
     };
 
-    const createUser = async (username: string, password: string) => {
+    const createUser = async (username: string, password: string, handle: string) => {
       await fetchy("/api/users", "POST", {
-        body: { username, password },
+        body: { username, password, handle },
       });
     };
 
@@ -44,6 +44,10 @@ export const useUserStore = defineStore(
       await fetchy("/api/users", "PATCH", { body: { update: patch } });
     };
 
+    const updateHandle = async (newHandle: string) => {
+      await fetchy(`/api/profiles/handle/${newHandle}`, "PATCH");
+    };
+
     const deleteUser = async () => {
       await fetchy("/api/users", "DELETE");
       resetStore();
@@ -57,6 +61,7 @@ export const useUserStore = defineStore(
       updateSession,
       logoutUser,
       updateUser,
+      updateHandle,
       deleteUser,
     };
   },

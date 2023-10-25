@@ -2,8 +2,14 @@
 import { useToastStore } from "@/stores/toast";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
-import { computed, onBeforeMount } from "vue";
-import { RouterLink, RouterView, useRoute } from "vue-router";
+import { computed, onBeforeMount, ref } from "vue";
+import { RouterLink, useRoute } from "vue-router";
+import DailyUsageForm from "./components/Profile/DailyUsageForm.vue";
+const isSidebarOpen = ref(false);
+
+function toggleSidebar() {
+  isSidebarOpen.value = !isSidebarOpen.value;
+}
 
 const currentRoute = useRoute();
 const currentRouteName = computed(() => currentRoute.name);
@@ -23,76 +29,91 @@ onBeforeMount(async () => {
 
 <template>
   <header>
-    <nav>
-      <div class="title">
-        <img src="@/assets/images/logo.svg" />
-        <RouterLink :to="{ name: 'Home' }">
-          <h1>Social Media App</h1>
-        </RouterLink>
-      </div>
-      <ul>
-        <li>
-          <RouterLink :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> Home </RouterLink>
-        </li>
-        <li v-if="isLoggedIn">
-          <RouterLink :to="{ name: 'Settings' }" :class="{ underline: currentRouteName == 'Settings' }"> Settings </RouterLink>
-        </li>
-        <li v-if="isLoggedIn">
-          <RouterLink :to="{ name: 'Labels' }" :class="{ underline: currentRouteName == 'Labels' }"> Labels </RouterLink>
-        </li>
-        <li v-else>
-          <RouterLink :to="{ name: 'Login' }" :class="{ underline: currentRouteName == 'Login' }"> Login </RouterLink>
-        </li>
-      </ul>
-    </nav>
-    <article v-if="toast !== null" class="toast" :class="toast.style">
-      <p>{{ toast.message }}</p>
-    </article>
+    <div id="sidebar-toggle" @click="toggleSidebar">&#9776;</div>
+    <RouterLink class="title" :to="{ name: 'Home' }">Ounce</RouterLink>
+    <DailyUsageForm v-if="isLoggedIn" />
   </header>
-  <RouterView />
+
+  <div id="sidebar-container" :style="{ left: isSidebarOpen ? '0' : '-250px' }">
+    <aside id="sidebar">
+      <RouterLink :class="{ notUnderline: currentRouteName == 'Home' }" :to="{ name: 'Home' }"> Home </RouterLink>
+      <RouterLink v-if="isLoggedIn" :class="{ notUnderline: currentRouteName == 'Settings' }" :to="{ name: 'Settings' }"> Settings </RouterLink>
+      <RouterLink v-if="isLoggedIn" :class="{ notUnderline: currentRouteName == 'Labels' }" :to="{ name: 'Labels' }"> Labels </RouterLink>
+      <RouterLink v-else :class="{ notUnderline: currentRouteName == 'Login' }" :to="{ name: 'Login' }"> Login </RouterLink>
+    </aside>
+  </div>
+  <article v-if="toast !== null" class="toast" :class="toast.style">
+    <p>{{ toast.message }}</p>
+  </article>
+  <RouterView :class="{ 'content-with-sidebar': isSidebarOpen === true }" />
 </template>
 
-<style scoped>
-@import "./assets/toast.css";
-
-nav {
-  padding: 1em 2em;
-  background-color: lightgray;
+<style>
+header {
   display: flex;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
   align-items: center;
+  justify-content: space-between;
+  background-color: lightblue;
+  color: #fff;
 }
-
-h1 {
-  font-size: 2em;
-  margin: 0;
+.notUnderline {
+  text-decoration: none !important;
 }
-
 .title {
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-}
-
-img {
-  height: 2em;
-}
-
-a {
-  font-size: large;
+  flex-grow: 1;
+  font-weight: bold;
+  font-family: "Brush Script MT", cursive;
+  font-size: 5em;
+  padding: 0%;
   color: black;
   text-decoration: none;
 }
 
-ul {
-  list-style-type: none;
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  flex-direction: row;
-  gap: 1em;
+#sidebar-toggle {
+  padding: 2em;
+  font-size: 1.5em;
+  cursor: pointer;
+  color: black;
 }
 
-.underline {
-  text-decoration: underline;
+main {
+  padding: 20px;
+}
+
+/* Add additional styles for your sidebar if needed */
+#sidebar-container {
+  position: fixed;
+  top: 122.5px; /* Adjust as needed based on your header height */
+  left: -250px;
+  width: 245px;
+  height: 100vh;
+  background-color: #f2f2f2;
+  transition: left 0.3s ease;
+  border: black solid 2px;
+}
+
+#sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  color: black; /* Adjust text color as needed */
+  align-items: center;
+}
+#sidebar * {
+  margin-bottom: 30px;
+  color: black;
+  font-size: x-large;
+}
+
+/* Style for the content when the sidebar is open */
+.content-with-sidebar {
+  margin-left: 250px;
+  transition: margin-left 0.3s ease;
 }
 </style>

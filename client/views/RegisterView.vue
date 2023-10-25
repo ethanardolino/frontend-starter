@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import LoginForm from "@/components/Login/LoginForm.vue";
+import RegisterForm from "@/components/Login/RegisterForm.vue";
 import { RouterLink } from "vue-router";
 </script>
 
 <template>
-  <main class="login-container">
+  <main class="column">
     <div class="card">
-      <h1>Login Below</h1>
-      <LoginForm />
-      <RouterLink :to="{ name: 'Register' }">Don't have an account? Register now.</RouterLink>
+      <h1>Register below</h1>
+      <RegisterForm />
+      <RouterLink :to="{ name: 'Login' }">Already have an account? Log in here.</RouterLink>
     </div>
   </main>
 </template>
 
 <style scoped>
-.login-container {
+main {
   display: flex;
   justify-content: center;
   align-items: center;

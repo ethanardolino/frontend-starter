@@ -17,20 +17,40 @@ async function changeLabel() {
 
 <template>
   <form class="pure-form pure-form-aligned" @submit.prevent="changeLabel">
-    <h3>Modify a Label</h3>
-    <div class="pure-control-group">
-      <label for="aligned-select">Old Label</label>
-      <select v-model.trim="oldLabel" name="aligned-select" required>
-        <option v-for="_label in props.labels" :key="_label._id" :value="_label">{{ _label }}</option>
-      </select>
-    </div>
-    <div class="pure-control-group">
-      <label for="aligned-label">New Label</label>
+    <fieldset class="label-fields">
+      <legend>Change a Label</legend>
+      <div class="select-label-container">
+        <label for="aligned-select">Old Label</label>
+        <select class="select-label" v-model.trim="oldLabel" name="aligned-select" required>
+          <option v-for="_label in props.labels" :key="_label._id" :value="_label">{{ _label }}</option>
+        </select>
+      </div>
       <input v-model.trim="newLabel" type="text" id="aligned-label" placeholder="new label" required />
-    </div>
-
-    <div class="pure-controls">
       <button type="submit" class="pure-button pure-button-primary">Submit</button>
-    </div>
+    </fieldset>
   </form>
 </template>
+
+<style scoped>
+.label-fields {
+  display: flex;
+  flex-direction: column;
+  margin-top: 2em;
+  margin-bottom: 6em;
+}
+.label-fields * {
+  margin-top: 1.5em;
+}
+.select-label-container {
+  display: flex;
+  margin-right: 2em;
+  align-items: center;
+}
+.select-label {
+  flex: 1;
+  margin-left: 2em;
+}
+label {
+  font-size: larger;
+}
+</style>
