@@ -29,7 +29,7 @@ main {
   align-items: center;
   padding: 20px;
   border-radius: 8px;
-  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   background-color: #ffffff; /* Light blue background color */
   border: 1px solid #ddd; /* Light border color */
 }

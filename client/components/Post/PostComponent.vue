@@ -3,15 +3,17 @@ import { useLabelStore } from "@/stores/label";
 import { useUserStore } from "@/stores/user";
 import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
 import DisplayLabel from "../Label/DisplayLabel.vue";
 
-const { removeLabel } = useLabelStore();
-const props = defineProps(["post"]);
-const emit = defineEmits(["editPost", "refreshPosts"]);
-const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
-const labels = ref([]);
+const { removeLabel, labelAccount } = useLabelStore();
+const props = defineProps(["post", "labels"]);
+const emit = defineEmits(["editPost", "refreshPosts", "refreshLabels"]);
+const { currentUsername } = storeToRefs(useUserStore());
+const _init_all_labels = await fetchy("/api/itemLabels/labels", "GET");
+const all_labels = ref<Array<string>>(_init_all_labels);
+const addedLabel = ref("");
 
 const deletePost = async () => {
   try {
@@ -22,26 +24,30 @@ const deletePost = async () => {
   emit("refreshPosts");
 };
 
-async function getLabels() {
-  try {
-    if (isLoggedIn) {
-      labels.value = await fetchy(`/api/itemLabels/labels/${props.post.author}`, "GET");
-    }
-  } catch {
-    return;
-  }
-}
-
 async function deleteLabels(label: string) {
   await removeLabel(label, props.post.author);
+  emit("refreshLabels");
+  emit("refreshPosts");
 }
-onMounted(async () => {
-  await getLabels();
-});
+
+async function addLabel() {
+  try {
+    await labelAccount(addedLabel.value, props.post.author);
+  } catch {
+    addedLabel.value = "";
+  }
+  emit("refreshLabels");
+  addedLabel.value = "";
+  emit("refreshPosts");
+}
 </script>
 
 <template>
-  <div class="group">
+  <div class="label-container">
+    <label for="select" class="big-label">+</label>
+    <select class="add-label" v-model.trim="addedLabel" name="select" @change="addLabel" required>
+      <option v-for="l in all_labels" :key="l" :value="l">{{ l }}</option>
+    </select>
     <DisplayLabel v-for="l in labels" :key="l" v-bind:label="l" v-on:deleteLabel="deleteLabels" />
   </div>
   <p class="author">{{ props.post.author }}</p>
@@ -92,5 +98,31 @@ menu {
 
 .base article:only-child {
   margin-left: auto;
+}
+
+.add-label {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 4em;
+  height: 4em;
+  padding: 10px;
+  border: 3px solid green;
+  border-radius: 50%;
+  cursor: pointer;
+  text-align: center;
+  outline: none;
+  background-color: white;
+}
+.big-label {
+  font-size: 2em;
+  font-weight: bolder;
+  margin-right: 5px;
+}
+
+.label-container {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
 }
 </style>

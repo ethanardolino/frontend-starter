@@ -1,10 +1,13 @@
 <script setup lang="ts">
+import router from "@/router";
 import { useToastStore } from "@/stores/toast";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
-import { computed, onBeforeMount, ref } from "vue";
+import { computed, onBeforeMount, onMounted, ref } from "vue";
 import { RouterLink, useRoute } from "vue-router";
 import DailyUsageForm from "./components/Profile/DailyUsageForm.vue";
+import { fetchy } from "./utils/fetchy";
+
 const isSidebarOpen = ref(false);
 
 function toggleSidebar() {
@@ -14,8 +17,13 @@ function toggleSidebar() {
 const currentRoute = useRoute();
 const currentRouteName = computed(() => currentRoute.name);
 const userStore = useUserStore();
-const { isLoggedIn } = storeToRefs(userStore);
+const { isLoggedIn, currentUsername } = storeToRefs(userStore);
 const { toast } = storeToRefs(useToastStore());
+
+async function logout() {
+  await userStore.logoutUser();
+  void router.push({ name: "Home" });
+}
 
 // Make sure to update the session before mounting the app in case the user is already logged in
 onBeforeMount(async () => {
@@ -25,13 +33,28 @@ onBeforeMount(async () => {
     // User is not logged in
   }
 });
+
+// removes post restriction for user's everyday
+onMounted(async () => {
+  setInterval(async () => {
+    const now = new Date();
+    if (now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() === 0) {
+      await fetchy("/api/limited_profile", "DELETE");
+    }
+  }, 1000);
+});
 </script>
 
 <template>
   <header>
     <div id="sidebar-toggle" @click="toggleSidebar">&#9776;</div>
-    <RouterLink class="title" :to="{ name: 'Home' }">Ounce</RouterLink>
+    <RouterLink class="title" :to="{ name: 'Home' }" :style="{ 'flex-grow': isLoggedIn ? 0 : 1 }">Ounce</RouterLink>
+    <div class="user-box" v-if="isLoggedIn">
+      <p class="top-text">user:</p>
+      <p class="bottom-text">@{{ currentUsername }}</p>
+    </div>
     <DailyUsageForm v-if="isLoggedIn" />
+    <button v-if="isLoggedIn" class="logout-button" @click="logout">Logout</button>
   </header>
 
   <div id="sidebar-container" :style="{ left: isSidebarOpen ? '0' : '-250px' }">
@@ -64,7 +87,6 @@ header {
   text-decoration: none !important;
 }
 .title {
-  flex-grow: 1;
   font-weight: bold;
   font-family: "Brush Script MT", cursive;
   font-size: 5em;
@@ -74,7 +96,8 @@ header {
 }
 
 #sidebar-toggle {
-  padding: 2em;
+  padding-left: 1em;
+  padding-right: 1em;
   font-size: 1.5em;
   cursor: pointer;
   color: black;
@@ -115,5 +138,39 @@ main {
 .content-with-sidebar {
   margin-left: 250px;
   transition: margin-left 0.3s ease;
+}
+
+.user-box {
+  width: 200px;
+  text-align: center;
+  line-height: 0.1;
+  margin-left: 3em;
+  margin-right: 3em;
+}
+
+.top-text {
+  font-weight: bold;
+  font-size: 24px;
+  font-family: "Comic Sans MS";
+  font-style: italic;
+  padding: 0%;
+  color: black;
+}
+
+.bottom-text {
+  font-weight: bold;
+  font-size: 3em;
+  font-family: "Comic Sans MS";
+  padding: 0%;
+  color: black;
+}
+
+.logout-button {
+  margin-right: 1em;
+  background-color: lightcoral;
+  border-radius: 3px;
+  font-size: 2em;
+  padding: 10px;
+  font-style: italic;
 }
 </style>

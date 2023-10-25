@@ -217,9 +217,15 @@ class Routes {
     return await Promise.all([LimitedProfile.limited.readMany({}), LimitedPost.limited.readMany({})]);
   }
 
+  @Router.get("/limited_profile/numPosts")
+  async canUserPost(session: WebSessionDoc) {
+    const user = WebSession.getUser(session);
+    const numPosts = await LimitedProfile.getCount(user);
+    return LimitedProfile.underLimit(numPosts + 1);
+  }
   @Router.delete("/limited_profile")
   async resetLimits() {
-    return await Promise.all([LimitedPost.reset(), LimitedProfile.reset()]);
+    return await Promise.all([LimitedPost.reset(), LimitedProfile.reset(), Profile.resetUsage()]);
   }
 }
 

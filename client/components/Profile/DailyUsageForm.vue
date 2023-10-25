@@ -51,7 +51,6 @@ onUnmounted(async () => {
   background-color: lightgray;
   width: fit-content;
   color: black;
-  margin-right: 3em;
 }
 .clock-value {
   font-size: 2em;

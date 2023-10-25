@@ -75,4 +75,8 @@ export default class ProfileConcept {
   getReadableTimeActive(seconds: number) {
     return { seconds };
   }
+
+  async resetUsage() {
+    await this.profiles.updateMany({}, { timeActive: 0 });
+  }
 }
