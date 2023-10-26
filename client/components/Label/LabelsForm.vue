@@ -47,6 +47,9 @@ async function deleteLabels(label: string) {
 <style>
 main {
   margin: 5em;
+  display: flex;
+  flex-direction: column;
+  width: 80%;
 }
 .group {
   margin-top: 2em;
