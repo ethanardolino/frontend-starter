@@ -43,7 +43,7 @@ async function addLabel() {
 
 onMounted(async () => {
   try {
-    all_labels.value = await fetchy("/api/itemLabels/labels", "GET");
+    all_labels.value = (await fetchy("/api/itemLabels/labels", "GET")).filter((label: string) => label !== "Following");
   } catch {
     return;
   }
