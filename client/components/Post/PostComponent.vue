@@ -11,7 +11,7 @@ import DisplayLabel from "../Label/DisplayLabel.vue";
 const { removeLabel, labelAccount } = useLabelStore();
 const props = defineProps(["post", "labels", "canAddLabel"]);
 const emit = defineEmits(["editPost", "refreshPosts", "refreshLabels"]);
-const { currentUsername } = storeToRefs(useUserStore());
+const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
 const all_labels = ref<Array<string>>([]);
 const addedLabel = ref("");
 
@@ -42,12 +42,16 @@ async function addLabel() {
 }
 
 onMounted(async () => {
-  all_labels.value = await fetchy("/api/itemLabels/labels", "GET");
+  try {
+    all_labels.value = await fetchy("/api/itemLabels/labels", "GET");
+  } catch {
+    return;
+  }
 });
 </script>
 
 <template>
-  <div class="label-container">
+  <div class="label-container" v-if="isLoggedIn">
     <div v-if="props.canAddLabel">
       <label :for="props.post._id" class="big-label">+</label>
       <select class="add-label" v-model.trim="addedLabel" :id="props.post._id" @change="addLabel" required>

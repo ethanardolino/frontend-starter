@@ -81,9 +81,13 @@ function updateEditing(id: string) {
 }
 
 onBeforeMount(async () => {
-  await getPosts();
-  await getLabels();
-  loaded.value = true;
+  try {
+    await getPosts();
+    await getLabels();
+    loaded.value = true;
+  } catch {
+    return;
+  }
 });
 </script>
 
