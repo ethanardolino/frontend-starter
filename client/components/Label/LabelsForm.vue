@@ -56,6 +56,7 @@ main {
   margin-bottom: 2em;
   display: flex;
   flex-wrap: wrap;
+  width: 60em;
 }
 section {
   margin-top: 2em;
@@ -76,7 +77,8 @@ legend {
   margin-top: 2em;
   margin-bottom: 6em;
 }
-.label-fields * {
+.label-fields *:not(legend) {
   margin-top: 1.5em;
+  width: 20em;
 }
 </style>

@@ -21,7 +21,7 @@ async function changeLabel() {
       <legend>Change a Label</legend>
       <div class="select-label-container">
         <label for="aligned-select">Old Label</label>
-        <select class="select-label" v-model.trim="oldLabel" id="aligned-select" required>
+        <select class="select-label" v-model.trim="oldLabel" name="aligned-select" required>
           <option v-for="_label in props.labels" :key="_label._id" :value="_label">{{ _label }}</option>
         </select>
       </div>
@@ -32,14 +32,20 @@ async function changeLabel() {
 </template>
 
 <style scoped>
+legend {
+  font-size: x-large;
+  font-style: italic;
+  font-weight: bolder;
+}
 .label-fields {
   display: flex;
   flex-direction: column;
   margin-top: 2em;
   margin-bottom: 6em;
 }
-.label-fields * {
+.label-fields *:not(legend, label) {
   margin-top: 1.5em;
+  width: 20em;
 }
 .select-label-container {
   display: flex;
@@ -52,5 +58,6 @@ async function changeLabel() {
 }
 label {
   font-size: larger;
+  margin-top: 1.5em;
 }
 </style>

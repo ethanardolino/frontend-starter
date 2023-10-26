@@ -55,8 +55,9 @@ legend {
   margin-top: 2em;
   margin-bottom: 6em;
 }
-.label-fields * {
+.label-fields *:not(legend, label) {
   margin-top: 1.5em;
+  width: 20em;
 }
 
 .select-label-container {
@@ -67,8 +68,11 @@ legend {
 .select-label {
   flex: 1;
   margin-left: 2em;
+  align-self: center;
 }
 label {
   font-size: larger;
+  margin-top: 1.5em;
+  width: fit-content;
 }
 </style>
