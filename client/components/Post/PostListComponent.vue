@@ -94,7 +94,7 @@ onBeforeMount(async () => {
 <template>
   <section v-if="isLoggedIn" class="create-post">
     <div v-if="!canUserPost" class="over-post-limit">Come back tomorrow to post again!</div>
-    <div v-else-if="isPostToggled">
+    <div v-else-if="isPostToggled" style="margin-bottom: 2em">
       <button @click="togglePostButton" class="post-button" id="cancel">&#10006;</button>
       <CreatePostForm @refreshPosts="getPosts" />
     </div>
@@ -176,7 +176,7 @@ article {
   text-align: center;
   line-height: 100px;
   cursor: pointer;
-  margin-top: 2em;
+  margin-top: 4em;
   margin-bottom: 2em;
 }
 
@@ -187,6 +187,7 @@ article {
 
 #cancel {
   background-color: lightcoral; /* Red color */
+  margin-top: 6.5em;
 }
 
 .login-button {
@@ -201,6 +202,7 @@ article {
   color: black;
   border-radius: 20px;
   margin-top: 2em;
+  margin-bottom: 2em;
   cursor: pointer;
 }
 
@@ -216,7 +218,8 @@ article {
   align-items: center;
   width: 100%;
   height: 100px;
-  margin-top: 2em;
+  margin-top: 4em;
+  margin-bottom: 2em;
   background-color: lightcoral;
   border-radius: 20px;
   color: black;

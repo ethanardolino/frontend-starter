@@ -63,7 +63,7 @@ onMounted(async () => {
       <div class="column" v-if="isLoggedIn">
         <RouterLink v-if="isLoggedIn" :class="{ notUnderline: currentRouteName == 'Settings' }" :to="{ name: 'Settings' }"> Settings </RouterLink>
         <RouterLink v-if="isLoggedIn" :class="{ notUnderline: currentRouteName == 'Labels' }" :to="{ name: 'Labels' }"> Labels </RouterLink>
-        <RouterLink v-if="isLoggedIn" :class="{ notUnderline: currentRouteName == 'Profiles' }" :to="{ name: 'Profile', params: { username: currentUsername } }"> Profile </RouterLink>
+        <RouterLink v-if="isLoggedIn" :class="{ notUnderline: currentRouteName == 'Profile' }" :to="{ name: 'Profile', params: { username: currentUsername } }"> Profile </RouterLink>
       </div>
       <RouterLink v-else :class="{ notUnderline: currentRouteName == 'Login' }" :to="{ name: 'Login' }"> Login </RouterLink>
     </aside>
@@ -86,6 +86,7 @@ header {
   justify-content: space-between;
   background-color: lightblue;
   color: #fff;
+  margin-bottom: 4em;
 }
 .notUnderline {
   text-decoration: none !important;

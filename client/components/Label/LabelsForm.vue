@@ -44,7 +44,7 @@ async function deleteLabels(label: string) {
   </main>
 </template>
 
-<style>
+<style scoped>
 main {
   margin: 5em;
   display: flex;
