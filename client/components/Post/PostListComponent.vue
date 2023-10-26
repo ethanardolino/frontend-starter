@@ -8,7 +8,7 @@ import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
 import SearchPostForm from "./SearchPostForm.vue";
 
-const { isLoggedIn } = storeToRefs(useUserStore());
+const { isLoggedIn, currentUsername } = storeToRefs(useUserStore());
 
 const loaded = ref(false);
 const isPostToggled = ref(false);
@@ -110,7 +110,15 @@ onBeforeMount(async () => {
   <section class="posts" v-if="loaded && posts.length !== 0">
     <article v-for="post in posts" :key="post._id">
       <Suspense>
-        <PostComponent v-if="editing !== post._id" :post="post" :labels="labelMap.get(post.author)" @refreshPosts="getPosts" @editPost="updateEditing" @refreshLabels="getLabels" />
+        <PostComponent
+          v-if="editing !== post._id"
+          :post="post"
+          :labels="labelMap.get(post.author)"
+          :canAddLabel="currentUsername !== post.author"
+          @refreshPosts="getPosts"
+          @editPost="updateEditing"
+          @refreshLabels="getLabels"
+        />
         <EditPostForm v-else :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
       </Suspense>
     </article>

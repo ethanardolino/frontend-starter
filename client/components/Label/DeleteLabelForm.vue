@@ -19,7 +19,7 @@ async function deleteLabel() {
     <h3>Delete a Label</h3>
     <div class="pure-control-group">
       <label for="aligned-select">Label</label>
-      <select v-model.trim="label" name="aligned-select" required>
+      <select v-model.trim="label" id="aligned-select" required>
         <option v-for="_label in props.labels" :key="_label._id" :value="_label">{{ _label }}</option>
       </select>
     </div>

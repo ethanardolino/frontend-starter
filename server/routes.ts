@@ -82,11 +82,23 @@ class Routes {
     return await Profile.changeHandle(user, new_handle);
   }
 
-  @Router.get("/profiles/following/")
+  @Router.get("/profiles/handle/:username")
+  async getHandle(username: string) {
+    const user = await User.getUserByUsername(username);
+    return (await Profile.getProfile(user._id))?.handle;
+  }
+
+  @Router.get("/profiles/following")
   async getFollowed(session: WebSessionDoc) {
     const user = WebSession.getUser(session);
     const followed = await Profile.getFollowed(user);
     return await Promise.all(followed.map(async (_id) => (await User.getUserById(_id.follows)).username));
+  }
+
+  @Router.get("/profiles/num_followers/:username")
+  async getNumFollowers(username: string) {
+    const user = await User.getUserByUsername(username);
+    return await Profile.getNumberFollowers(user._id);
   }
 
   @Router.post("/profiles/following/:username")
@@ -220,7 +232,12 @@ class Routes {
   @Router.get("/limited_profile/numPosts")
   async canUserPost(session: WebSessionDoc) {
     const user = WebSession.getUser(session);
-    const numPosts = await LimitedProfile.getCount(user);
+    let numPosts;
+    try {
+      numPosts = await LimitedProfile.getCount(user);
+    } catch {
+      return;
+    }
     return LimitedProfile.underLimit(numPosts + 1);
   }
   @Router.delete("/limited_profile")

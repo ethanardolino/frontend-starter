@@ -33,8 +33,8 @@ async function addAccountLabel() {
       <legend>Label an Account</legend>
       <input v-model.trim="username" type="text" id="username" placeholder="username" required />
       <div class="select-label-container">
-        <label for="select">Label</label>
-        <select class="select-label" v-model.trim="labelForAccount" name="select" required>
+        <label for="select-label-el-2">Label</label>
+        <select class="select-label" v-model.trim="labelForAccount" id="select-label-el-2" required>
           <option v-for="_label in props.labels" :key="_label._id" :value="_label">{{ _label }}</option>
         </select>
       </div>

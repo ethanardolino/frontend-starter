@@ -60,8 +60,11 @@ onMounted(async () => {
   <div id="sidebar-container" :style="{ left: isSidebarOpen ? '0' : '-250px' }">
     <aside id="sidebar">
       <RouterLink :class="{ notUnderline: currentRouteName == 'Home' }" :to="{ name: 'Home' }"> Home </RouterLink>
-      <RouterLink v-if="isLoggedIn" :class="{ notUnderline: currentRouteName == 'Settings' }" :to="{ name: 'Settings' }"> Settings </RouterLink>
-      <RouterLink v-if="isLoggedIn" :class="{ notUnderline: currentRouteName == 'Labels' }" :to="{ name: 'Labels' }"> Labels </RouterLink>
+      <div class="column" v-if="isLoggedIn">
+        <RouterLink v-if="isLoggedIn" :class="{ notUnderline: currentRouteName == 'Settings' }" :to="{ name: 'Settings' }"> Settings </RouterLink>
+        <RouterLink v-if="isLoggedIn" :class="{ notUnderline: currentRouteName == 'Labels' }" :to="{ name: 'Labels' }"> Labels </RouterLink>
+        <RouterLink v-if="isLoggedIn" :class="{ notUnderline: currentRouteName == 'Profiles' }" :to="{ name: 'Profile', params: { username: currentUsername } }"> Profile </RouterLink>
+      </div>
       <RouterLink v-else :class="{ notUnderline: currentRouteName == 'Login' }" :to="{ name: 'Login' }"> Login </RouterLink>
     </aside>
   </div>
@@ -71,7 +74,8 @@ onMounted(async () => {
   <RouterView :class="{ 'content-with-sidebar': isSidebarOpen === true }" />
 </template>
 
-<style>
+<style scoped>
+@import "./assets/toast.css";
 header {
   display: flex;
   position: fixed;

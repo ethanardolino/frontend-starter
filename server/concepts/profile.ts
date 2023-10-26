@@ -38,6 +38,10 @@ export default class ProfileConcept {
     return await this.following.readMany({ user: user });
   }
 
+  async getNumberFollowers(user: ObjectId) {
+    return (await this.following.readMany({ follows: user })).length;
+  }
+
   async followAccount(user: ObjectId, follows: ObjectId) {
     if (await this.following.readOne({ user, follows })) {
       throw new NotAllowedError("Account is already followed!");

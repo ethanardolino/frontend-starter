@@ -6,6 +6,7 @@ import HomeView from "../views/HomeView.vue";
 import LabelsView from "../views/LabelsView.vue";
 import LoginView from "../views/LoginView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
+import ProfileView from "../views/ProfileView.vue";
 import RegisterView from "../views/RegisterView.vue";
 import SettingView from "../views/SettingView.vue";
 
@@ -28,6 +29,13 @@ const router = createRouter({
       name: "Labels",
       component: LabelsView,
       meta: { requiresAuth: true },
+    },
+    {
+      path: "/profile/:username",
+      name: "Profile",
+      component: ProfileView,
+      meta: { requiresAuth: true },
+      props: true,
     },
     {
       path: "/login",

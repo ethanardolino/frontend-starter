@@ -3,16 +3,16 @@ import { useLabelStore } from "@/stores/label";
 import { useUserStore } from "@/stores/user";
 import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
+import { RouterLink } from "vue-router";
 import { fetchy } from "../../utils/fetchy";
 import DisplayLabel from "../Label/DisplayLabel.vue";
 
 const { removeLabel, labelAccount } = useLabelStore();
-const props = defineProps(["post", "labels"]);
+const props = defineProps(["post", "labels", "canAddLabel"]);
 const emit = defineEmits(["editPost", "refreshPosts", "refreshLabels"]);
 const { currentUsername } = storeToRefs(useUserStore());
-const _init_all_labels = await fetchy("/api/itemLabels/labels", "GET");
-const all_labels = ref<Array<string>>(_init_all_labels);
+const all_labels = ref<Array<string>>([]);
 const addedLabel = ref("");
 
 const deletePost = async () => {
@@ -40,17 +40,25 @@ async function addLabel() {
   addedLabel.value = "";
   emit("refreshPosts");
 }
+
+onMounted(async () => {
+  all_labels.value = await fetchy("/api/itemLabels/labels", "GET");
+});
 </script>
 
 <template>
   <div class="label-container">
-    <label for="select" class="big-label">+</label>
-    <select class="add-label" v-model.trim="addedLabel" name="select" @change="addLabel" required>
-      <option v-for="l in all_labels" :key="l" :value="l">{{ l }}</option>
-    </select>
+    <div v-if="props.canAddLabel">
+      <label :for="props.post._id" class="big-label">+</label>
+      <select class="add-label" v-model.trim="addedLabel" :id="props.post._id" @change="addLabel" required>
+        <option v-for="l in all_labels" :key="l" :value="l">{{ l }}</option>
+      </select>
+    </div>
     <DisplayLabel v-for="l in labels" :key="l" v-bind:label="l" v-on:deleteLabel="deleteLabels" />
   </div>
-  <p class="author">{{ props.post.author }}</p>
+  <RouterLink v-slot="{ navigate }" :to="{ name: 'Profile', params: { username: props.post.author } }">
+    <button class="author" @click="navigate">{{ props.post.author }}</button>
+  </RouterLink>
   <p>{{ props.post.content }}</p>
   <div class="base">
     <menu v-if="props.post.author == currentUsername">

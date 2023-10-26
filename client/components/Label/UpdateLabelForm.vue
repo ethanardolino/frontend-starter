@@ -21,7 +21,7 @@ async function changeLabel() {
       <legend>Change a Label</legend>
       <div class="select-label-container">
         <label for="aligned-select">Old Label</label>
-        <select class="select-label" v-model.trim="oldLabel" name="aligned-select" required>
+        <select class="select-label" v-model.trim="oldLabel" id="aligned-select" required>
           <option v-for="_label in props.labels" :key="_label._id" :value="_label">{{ _label }}</option>
         </select>
       </div>
