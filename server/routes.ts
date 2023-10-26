@@ -67,7 +67,8 @@ class Routes {
   async deleteUser(session: WebSessionDoc) {
     const user_id = WebSession.getUser(session);
     WebSession.end(session);
-    return await Promise.all([User.delete(user_id), Profile.delete(user_id)]);
+    const posts = await Post.getByAuthor(user_id);
+    return await Promise.all([User.delete(user_id), Profile.delete(user_id), posts.map((post) => Post.delete(post._id))]);
   }
 
   @Router.patch("/users")
