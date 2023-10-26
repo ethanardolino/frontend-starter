@@ -121,8 +121,12 @@ class Routes {
 
   @Router.get("/itemLabels/labels")
   async getAllLabels(session: WebSessionDoc) {
-    const user = WebSession.getUser(session);
-    return await Label.getLabels(user);
+    try {
+      const user = WebSession.getUser(session);
+      return await Label.getLabels(user);
+    } catch {
+      return;
+    }
   }
 
   @Router.post("/labels/:label")
@@ -158,8 +162,12 @@ class Routes {
 
   @Router.get("/itemLabels")
   async getAllItemLabels(session: WebSessionDoc) {
-    const user = WebSession.getUser(session);
-    return await Label.getAllItemLabels(user);
+    try {
+      const user = WebSession.getUser(session);
+      return await Label.getAllItemLabels(user);
+    } catch {
+      return;
+    }
   }
 
   @Router.get("/itemLabels/labels/:item")
@@ -231,14 +239,13 @@ class Routes {
 
   @Router.get("/limited_profile/numPosts")
   async canUserPost(session: WebSessionDoc) {
-    const user = WebSession.getUser(session);
-    let numPosts;
     try {
-      numPosts = await LimitedProfile.getCount(user);
+      const user = WebSession.getUser(session);
+      const numPosts = await LimitedProfile.getCount(user);
+      return LimitedProfile.underLimit(numPosts + 1);
     } catch {
       return;
     }
-    return LimitedProfile.underLimit(numPosts + 1);
   }
   @Router.delete("/limited_profile")
   async resetLimits() {
